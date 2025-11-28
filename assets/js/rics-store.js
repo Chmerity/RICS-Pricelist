@@ -54,11 +54,18 @@ class RICSStore {
             this.data.events = this.processEventsData(eventsData);
             this.filteredData.events = [...this.data.events];
 
+            // Load weather
+            const weatherResponse = await fetch('data/Weather.json');
+            const weatherData = await weatherResponse.json();
+            this.data.weather = this.processWeatherData(weatherData);
+            this.filteredData.weather = [...this.data.weather];
+
             console.log('Data loaded:', {
                 items: this.data.items.length,
                 traits: this.data.traits.length,
                 races: this.data.races.length,
-                events: this.data.events.length
+                events: this.data.events.length,
+                weather: this.data.weather.length
             });
 
         } catch (error) {
@@ -130,6 +137,22 @@ class RICSStore {
                 return trait.canAdd || trait.canRemove;
             })
             .filter(trait => trait.addPrice > 0 || trait.removePrice > 0); // Only traits with prices
+    }
+
+    processWeatherData(weatherObject) {
+        return Object.entries(weatherObject)
+            .map(([key, weatherData]) => {
+                return {
+                    defName: weatherData.DefName || key,
+                    label: weatherData.Label || weatherData.DefName || key,
+                    description: weatherData.Description || '',
+                    baseCost: weatherData.BaseCost || 0,
+                    karmaType: weatherData.KarmaType || 'None',
+                    modSource: weatherData.ModSource || 'Unknown',
+                    enabled: weatherData.Enabled !== false
+                };
+            })
+            .filter(weather => weather.enabled && weather.baseCost > 0);
     }
 
     processTraitDescription(description) {
@@ -218,6 +241,7 @@ class RICSStore {
     renderAllTabs() {
         this.renderItems();
         this.renderEvents();
+        this.renderWeather();
         this.renderTraits();
         this.renderRaces();
     }
@@ -381,6 +405,36 @@ class RICSStore {
     `).join('');
     }
 
+    renderWeather() {
+        const tbody = document.getElementById('weather-tbody');
+        const weather = this.filteredData.weather;
+
+        if (weather.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px;">No weather found</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = weather.map(weatherItem => `
+        <tr>
+            <td>
+                <div class="item-name">${this.escapeHtml(weatherItem.label)}</div>
+                <span class="metadata">
+                    ${this.escapeHtml(weatherItem.defName)}
+                    <br>From ${this.escapeHtml(weatherItem.modSource)}
+                    <br>Usage: !weather ${this.escapeHtml(weatherItem.label)} or !weather ${this.escapeHtml(weatherItem.defName)}
+                </span>
+            </td>
+            <td class="no-wrap">
+                <strong>${weatherItem.baseCost}</strong>
+            </td>
+            <td>${this.escapeHtml(weatherItem.karmaType)}</td>
+            <td>
+                ${weatherItem.description ? `<div class="trait-description">${this.escapeHtml(weatherItem.description)}</div>` : 'No description'}
+            </td>
+        </tr>
+    `).join('');
+    }
+
     // Helper method to format available genders
     getAvailableGenders(allowedGenders) {
         const genders = [];
@@ -402,6 +456,7 @@ class RICSStore {
         // Search functionality for each tab
         this.setupSearch('items');
         this.setupSearch('events');
+        this.setupSearch('weather');
         this.setupSearch('traits');
         this.setupSearch('races');
 
