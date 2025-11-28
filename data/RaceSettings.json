@@ -1,9 +1,10 @@
 {
   "Human": {
+    "DisplayName": "human",
     "Enabled": true,
     "BasePrice": 2625,
-    "MinAge": 26,
-    "MaxAge": 120,
+    "MinAge": 16,
+    "MaxAge": 65,
     "AllowCustomXenotypes": true,
     "DefaultXenotype": "Baseliner",
     "AllowedGenders": {
@@ -45,10 +46,11 @@
     }
   },
   "Alien_Nyaron": {
+    "DisplayName": "Nyaron",
     "Enabled": true,
     "BasePrice": 4500,
     "MinAge": 16,
-    "MaxAge": 120,
+    "MaxAge": 65,
     "AllowCustomXenotypes": true,
     "DefaultXenotype": "Baseliner",
     "AllowedGenders": {
@@ -70,8 +72,7 @@
       "Highmate": 0.7,
       "Starjack": 0.5,
       "Nyaron": 0.5,
-      "NyaronSanguophage": 0.5,
-      "Ratkin_Xeno": 0.5
+      "NyaronSanguophage": 0.5
     },
     "EnabledXenotypes": {
       "Baseliner": false,
@@ -87,8 +88,7 @@
       "Highmate": false,
       "Starjack": false,
       "Nyaron": true,
-      "NyaronSanguophage": true,
-      "Ratkin_Xeno": false
+      "NyaronSanguophage": true
     }
   }
 }
