@@ -4368,7 +4368,7 @@
       "Mod": "Core",
       "BasePrice": 1000,
       "Category": "Misc",
-      "Enabled": false
+      "Enabled": true
     },
     "ThrumboHorn": {
       "DefName": "ThrumboHorn",
